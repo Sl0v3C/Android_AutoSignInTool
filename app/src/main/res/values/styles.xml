@@ -1,0 +1,9 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="PyyTheme" parent="android:Theme.Material.Light" >
+        <item name="android:colorPrimary">@android:color/holo_blue_bright</item>
+        <item name="android:colorAccent">@color/colorAccent</item>
+    </style>
+
+</resources>

@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">签到助手</string>
+    <string name="app_list_name">应用名称</string>
+    <string name="run">开始签到</string>
+    <string name="intro">签到助手:可以辅助用户自动地进行其他APP的签到功能</string>
+</resources>
