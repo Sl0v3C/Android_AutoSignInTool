@@ -54,20 +54,21 @@ public class autoSignInJDJR {
     }
 
     private void iteratorJDJR(AccessibilityNodeInfo info) {
-        if (info.getChildCount() == 0 && info.getText() != null) {
+        if (info.getText() != null) {
             if (info.getText().equals("忘记手势密码")) {
                 gestureLockFlag =  true;
                 return;
             }
             if (info.getText().equals("签到")) {
                 AccessibilityNodeInfo parent = info.getParent();
-                if ("android.widget.RelativeLayout".equals(parent.getClassName())
+                if (info.findAccessibilityNodeInfosByViewId("com.jd.jrapp:id/tv_item_text") != null
+                        && "android.widget.RelativeLayout".equals(parent.getClassName())
                         && parent.isClickable()) {
                     parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                     found = true;
                     return;
                 }
-                if (info.isClickable() && ("android.widget.FrameLayout".equals(parent.getClassName()))) {
+                if (info.isClickable() && info.findAccessibilityNodeInfosByViewId("com.jd.jrapp:id/btn_feedback_summit") != null) {
                     info.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                     found = true;
                     return;

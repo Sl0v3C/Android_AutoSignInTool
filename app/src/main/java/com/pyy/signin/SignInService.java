@@ -12,6 +12,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static com.pyy.signin.Utils.delay;
+import static com.pyy.signin.Utils.prt;
 
 /**
  * Created by pyy on 2017/8/4.
@@ -30,7 +31,7 @@ public class SignInService extends AccessibilityService {
     @Override
     public void onAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
         fgPackageName = accessibilityEvent.getPackageName().toString();
-
+        //prt("Event: " + accessibilityEvent);
         if (accessibilityEvent.getEventType() == AccessibilityEvent.TYPE_VIEW_CLICKED) {
             //Log.i(logTag, "CINDY " + accessibilityEvent);
             if ("com.jd.jrapp".equals(fgPackageName) && (accessibilityEvent.getText().equals("京豆明细")
@@ -42,7 +43,10 @@ public class SignInService extends AccessibilityService {
             if ("com.jingdong.app.mall".equals(fgPackageName)
                     && !(accessibilityEvent.getText().toString().contains("领京豆")
                     || accessibilityEvent.getText().toString().contains("我的")
-                    || accessibilityEvent.getText().toString().contains("会员"))) {
+                    || accessibilityEvent.getText().toString().contains("会员")
+                    || accessibilityEvent.getText().toString().contains("惠赚钱")
+                    || accessibilityEvent.getText().toString().contains("签到")
+                    || accessibilityEvent.getText().toString().contains("领券"))) {
                 autoLock.lock();
                 autoCondition.signal();
                 autoLock.unlock();
@@ -97,25 +101,6 @@ public class SignInService extends AccessibilityService {
         }
     }
 
-    /*
-    private void setSimulateClick(View view, float x, float y) {
-        long downTime = SystemClock.uptimeMillis();
-        final MotionEvent downEvent = MotionEvent.obtain(downTime, downTime,
-                MotionEvent.ACTION_DOWN, x, y, 0);
-        downTime += 1000;
-        final MotionEvent upEvent = MotionEvent.obtain(downTime, downTime,
-                MotionEvent.ACTION_UP, x, y, 0);
-        view.onTouchEvent(downEvent);
-        view.onTouchEvent(upEvent);
-        downEvent.recycle();
-        upEvent.recycle();
-    }
-
-    private void autoSignInJD(AccessibilityEvent info) {
-        AccessibilityNodeInfo node = info.getSource();
-        recycle(node);
-    }
-    */
 
     @Override
     public void onInterrupt() {

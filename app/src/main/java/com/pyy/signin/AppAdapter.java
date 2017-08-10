@@ -75,7 +75,7 @@ class AppAdapter extends ArrayAdapter<AppInfo> {
                     switch (appInfo.appName) {
                         case "京东":
                             showToast("京东:当签到助手进入到签到界面后，用户手动点击签到。" +
-                                    "然后手动点击返回键，签到助手才会继续。\n" +
+                                    "然后双击右上角分享按钮，签到助手才会继续。\n" +
                                     "所有等待用户点击都会有20秒超时。");
                             break;
                         case "京东金融":

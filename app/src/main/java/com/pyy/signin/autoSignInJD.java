@@ -17,6 +17,8 @@ public class autoSignInJD {
     private boolean found = false;
     final int VIP = 0;
     final int BEAN = 1;
+    final int COUPON = 2;
+    final int MONEY = 3;
 
     public void doJD(AccessibilityService service) {
         autoLock.lock();
@@ -25,9 +27,8 @@ public class autoSignInJD {
             delay(6000);
             autoSignInJd(service.getRootInActiveWindow(), BEAN, service);
             ret = autoCondition.await(20, TimeUnit.SECONDS); // 20s
-            if (!ret) {
-                service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
-            }
+            delay(2000);
+            service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
             delay(2000);
             autoSignInJd(service.getRootInActiveWindow(), VIP, service);
             ret = autoCondition.await(20, TimeUnit.SECONDS); // 20s
@@ -37,7 +38,16 @@ public class autoSignInJD {
             delay(1000);
             service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
             delay(1000);
+            autoSignInJd(service.getRootInActiveWindow(), COUPON, service);
+            delay(3000);
+            iteratorJD(service.getRootInActiveWindow());
+            ret = autoCondition.await(20, TimeUnit.SECONDS); // 20s
+
+            autoSignInJd(service.getRootInActiveWindow(), MONEY, service);
+            ret = autoCondition.await(20, TimeUnit.SECONDS); // 20s
+            delay(1000);
             service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+            delay(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -62,9 +72,24 @@ public class autoSignInJD {
                     info.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                     delay(5000);
                     iteratorJD(service.getRootInActiveWindow());
-                    found = true;
                     return;
                 }
+            }
+        } else if (COUPON == type && info.getText() != null && info.getText().equals("领券")){
+            AccessibilityNodeInfo parent = info.getParent();
+            if ("android.widget.RelativeLayout".equals(parent.getClassName())
+                    && parent.isClickable()) {
+                parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                found = true;
+                return;
+            }
+        } else if (MONEY == type && info.getText() != null && info.getText().equals("惠赚钱")){
+            AccessibilityNodeInfo parent = info.getParent();
+            if ("android.widget.RelativeLayout".equals(parent.getClassName())
+                    && parent.isClickable()) {
+                parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                found = true;
+                return;
             }
         } else {
             for (int i = 0; i < info.getChildCount(); i++) {
@@ -81,7 +106,7 @@ public class autoSignInJD {
     }
 
     private void iteratorJD(AccessibilityNodeInfo info) {
-        if (info.getChildCount() == 0 && info.getText() != null) {
+        if (info.getText() != null) {
             if (info.getText().toString().contains("会员") && !info.getText().equals("PLUS会员")) {
                 AccessibilityNodeInfo parent = info.getParent();
                 if ("android.widget.RelativeLayout".equals(parent.getClassName())
@@ -90,6 +115,13 @@ public class autoSignInJD {
                     found = true;
                     return ;
                 }
+            }
+            if (info.getText().equals("签到")
+                    && info.findAccessibilityNodeInfosByViewId("com.jd.lib.coupon:id/sign_get_button") != null
+                    && info.isClickable()) {
+                info.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                found = true;
+                return;
             }
         } else {
             for (int i = 0; i < info.getChildCount(); i++) {
