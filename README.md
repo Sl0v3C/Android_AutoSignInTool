@@ -8,7 +8,7 @@
 　2. [用法](#用法)  
 　3. [注意](#注意)  
   
-<img width="200" height="400" src="/gif/example.gif">  
+<img width="202" height="340" src="/gif/example.gif">  
 
 # Android_AutoSignInTool
 Android sign in tool for 3rd party apps automatically or semi-automatically.
