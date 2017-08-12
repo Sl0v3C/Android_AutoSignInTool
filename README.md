@@ -3,7 +3,7 @@
 　1. [Requirements](#requirements)  
 　2. [Usage](#usage)  
 　3. [Notice](#notice)  
-[中文说明(README.md Chinese version)](#中文说明readme.md-chinese-version)  
+[中文说明(README.md Chinese version)](#中文说明readmemd-chinese-version) 
 　1. [要求](#要求)  
 　2. [用法](#用法)  
 　3. [注意](#注意)  
