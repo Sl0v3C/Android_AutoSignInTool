@@ -2,9 +2,7 @@ package com.pyy.signin;
 
 import android.accessibilityservice.AccessibilityService;
 import android.view.accessibility.AccessibilityNodeInfo;
-
 import java.util.concurrent.TimeUnit;
-
 import static com.pyy.signin.SignInService.autoCondition;
 import static com.pyy.signin.SignInService.autoLock;
 import static com.pyy.signin.Utils.delay;
@@ -19,17 +17,26 @@ public class autoSignInJD {
     final int BEAN = 1;
     final int COUPON = 2;
     final int MONEY = 3;
+    final String JD = "com.jingdong.app.mall";
 
     public void doJD(AccessibilityService service) {
         autoLock.lock();
         boolean ret;
         try {
+            delay(4000);
+            service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+            delay(3000);
+            Utils.reLaunch(service, JD);
             delay(6000);
             autoSignInJd(service.getRootInActiveWindow(), BEAN, service);
             ret = autoCondition.await(20, TimeUnit.SECONDS); // 20s
             delay(2000);
             service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
             delay(2000);
+            service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+            delay(3000);
+            Utils.reLaunch(service, JD);
+            delay(4000);
             autoSignInJd(service.getRootInActiveWindow(), VIP, service);
             ret = autoCondition.await(20, TimeUnit.SECONDS); // 20s
             if (!ret) {
@@ -55,7 +62,7 @@ public class autoSignInJD {
         MainPage.condition.signal();
     }
 
-    private void autoSignInJd(AccessibilityNodeInfo info, int type, AccessibilityService service) {
+    private boolean autoSignInJd(AccessibilityNodeInfo info, int type, AccessibilityService service) {
         if (BEAN == type && info.getChildCount() == 10) {
             if ("android.widget.GridView".equals(info.getClassName())) {
                 AccessibilityNodeInfo child = info.getChild(6);
@@ -63,7 +70,7 @@ public class autoSignInJD {
                         && "领京豆".equals(child.getChild(0).getText())) {
                     child.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                     found = true;
-                    return;
+                    return true;
                 }
             }
         } else if (VIP == type && info.getChildCount() == 0) {
@@ -72,7 +79,7 @@ public class autoSignInJD {
                     info.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                     delay(5000);
                     iteratorJD(service.getRootInActiveWindow());
-                    return;
+                    return true;
                 }
             }
         } else if (COUPON == type && info.getText() != null && info.getText().equals("领券")){
@@ -81,7 +88,7 @@ public class autoSignInJD {
                     && parent.isClickable()) {
                 parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                 found = true;
-                return;
+                return true;
             }
         } else if (MONEY == type && info.getText() != null && info.getText().equals("惠赚钱")){
             AccessibilityNodeInfo parent = info.getParent();
@@ -89,7 +96,7 @@ public class autoSignInJD {
                     && parent.isClickable()) {
                 parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                 found = true;
-                return;
+                return true;
             }
         } else {
             for (int i = 0; i < info.getChildCount(); i++) {
@@ -102,7 +109,7 @@ public class autoSignInJD {
                 }
             }
         }
-        return;
+        return false;
     }
 
     private void iteratorJD(AccessibilityNodeInfo info) {

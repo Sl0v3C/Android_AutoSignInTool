@@ -1,9 +1,7 @@
 package com.pyy.signin;
 
 import android.accessibilityservice.AccessibilityService;
-import android.content.Context;
 import android.view.accessibility.AccessibilityNodeInfo;
-
 import static com.pyy.signin.SignInService.autoLock;
 import static com.pyy.signin.Utils.delay;
 
@@ -13,11 +11,16 @@ import static com.pyy.signin.Utils.delay;
 
 public class autoSignInSMZDM {
     private boolean found = false;
+    final String SMZDM = "com.smzdm.client.android";
 
     public void doSMZDM(AccessibilityService service) {
         autoLock.lock();
         try {
             delay(8000);
+            service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+            delay(4000);
+            Utils.reLaunch(service, SMZDM);
+            delay(4000);
             iteratorSMZDM(service.getRootInActiveWindow());
             delay(6000);
             service.performGlobalAction(AccessibilityService.GESTURE_SWIPE_DOWN_AND_RIGHT);

@@ -1,17 +1,11 @@
 package com.pyy.signin;
 
 import android.accessibilityservice.AccessibilityService;
-import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
-import android.view.accessibility.AccessibilityNodeInfo;
-
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static com.pyy.signin.Utils.delay;
 import static com.pyy.signin.Utils.prt;
 
 /**
@@ -25,7 +19,7 @@ public class SignInService extends AccessibilityService {
     static Condition autoCondition = autoLock.newCondition();
     autoSignInJD jd = new autoSignInJD();
     autoSignInSMZDM smzdm = new autoSignInSMZDM();
-    autoSignInJDJR jdjr = new autoSignInJDJR();
+    autoSignInJDF jdf = new autoSignInJDF();
     autoSignInTXDM txdm = new autoSignInTXDM();
 
     @Override
@@ -34,8 +28,10 @@ public class SignInService extends AccessibilityService {
         //prt("Event: " + accessibilityEvent);
         if (accessibilityEvent.getEventType() == AccessibilityEvent.TYPE_VIEW_CLICKED) {
             //Log.i(logTag, "CINDY " + accessibilityEvent);
-            if ("com.jd.jrapp".equals(fgPackageName) && (accessibilityEvent.getText().equals("京豆明细")
-                 || !accessibilityEvent.getText().toString().contains("签到"))) {
+            if ("com.jd.jrapp".equals(fgPackageName) && (!accessibilityEvent.getText().toString().equals("签到")
+                    && !accessibilityEvent.getText().toString().equals("钢蹦明细")
+                    && accessibilityEvent.getClassName().equals("android.widget.Button"))) {
+                prt("" + accessibilityEvent);
                 autoLock.lock();
                 autoCondition.signal();
                 autoLock.unlock();
@@ -54,8 +50,8 @@ public class SignInService extends AccessibilityService {
         }
 
         if (accessibilityEvent.getEventType() == AccessibilityEvent.TYPE_VIEW_SCROLLED
-                && "com.jd.jrapp".equals(fgPackageName) && jdjr.gestureLockFlag) {
-            jdjr.gestureLockFlag = false;
+                && "com.jd.jrapp".equals(fgPackageName) && jdf.gestureLockFlag) {
+            jdf.gestureLockFlag = false;
             autoLock.lock();
             autoCondition.signal();
             autoLock.unlock();
@@ -86,7 +82,7 @@ public class SignInService extends AccessibilityService {
                     jd.doJD(this);
                     break;
                 case "com.jd.jrapp":
-                    jdjr.doJDJR(this);
+                    jdf.doJDF(this);
                     break;
                 case "com.smzdm.client.android":
                     smzdm.doSMZDM(this);

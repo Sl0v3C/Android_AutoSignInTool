@@ -1,6 +1,11 @@
 package com.pyy.signin;
 
+import android.accessibilityservice.AccessibilityService;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.app.usage.UsageStats;
+import android.app.usage.UsageStatsManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -8,8 +13,10 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +24,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +41,54 @@ public class Utils {
             Utils.showAlertInfo(context);
         }
     }
+
+    public static void showToast(String text, Context context) {
+        Toast toast = Toast.makeText(context,
+                text, Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        toast.show();
+    }
+
+    public static void reLaunch(AccessibilityService service, String text) {
+        prt(Utils.getTopApp(service.getApplicationContext()));
+        if (!Utils.getTopApp(service.getApplicationContext()).equals(text)) {
+            PackageManager packageManager = service.getApplicationContext().getPackageManager();
+            Intent mBootUpIntent = packageManager.getLaunchIntentForPackage(text);
+            mBootUpIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+            mBootUpIntent.setAction(Intent.ACTION_MAIN);
+            //mBootUpIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+            service.startActivity(mBootUpIntent);
+        }
+    }
+
+    public static String getTopApp(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { // 5.0及之后的方法
+            UsageStatsManager usm = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
+            if (usm != null) {
+                long now = System.currentTimeMillis();
+                // 获取40秒之内的应用程序使用状态
+                List<UsageStats> stats = usm.queryUsageStats(UsageStatsManager.INTERVAL_BEST, now - 40 * 1000, now);
+                String topActivity = "";
+                // 获取最新运行的程序
+                if ((stats != null) && (!stats.isEmpty())) {
+                    int j = 0;
+                    for (int i = 0; i < stats.size(); i++) {
+                        if (stats.get(i).getLastTimeUsed() > stats.get(j).getLastTimeUsed()) {
+                            j = i;
+                        }
+                    }
+                    topActivity = stats.get(j).getPackageName();
+                    return topActivity;
+                }
+            }
+        } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){ // 5.0之前的方法
+            ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+            ComponentName cn = activityManager.getRunningTasks(1).get(0).topActivity;
+            return cn.getPackageName();
+        }
+        return "Not found!";
+    }
+
 
     public static void showAlertInfo(final Context context) {
         new AlertDialog.Builder(context).setTitle("温馨提示")//设置对话框标题

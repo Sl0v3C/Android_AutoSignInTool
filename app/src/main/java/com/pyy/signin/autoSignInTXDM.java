@@ -2,9 +2,7 @@ package com.pyy.signin;
 
 import android.accessibilityservice.AccessibilityService;
 import android.view.accessibility.AccessibilityNodeInfo;
-
 import java.util.List;
-
 import static com.pyy.signin.SignInService.autoLock;
 import static com.pyy.signin.Utils.delay;
 
@@ -14,11 +12,16 @@ import static com.pyy.signin.Utils.delay;
 
 public class autoSignInTXDM {
     private boolean found = false;
+    final String TXDM = "com.qq.ac.android";
 
     public void doTXDM(AccessibilityService service) {
         autoLock.lock();
         try {
             delay(6000);
+            service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+            delay(4000);
+            Utils.reLaunch(service, TXDM);
+            delay(4000);
             iteratorTXDM(service.getRootInActiveWindow(), service);
             delay(1000);
             service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);

@@ -1,9 +1,6 @@
 package com.pyy.signin;
 
 import android.content.Context;
-import android.os.Looper;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +10,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -33,13 +29,6 @@ class AppAdapter extends ArrayAdapter<AppInfo> {
         this.appList = objects;
         inflater = LayoutInflater.from(context);
         showCnt = 0;
-    }
-
-    private void showToast(String text) {
-        Toast toast = Toast.makeText(getContext(),
-                text, Toast.LENGTH_LONG);
-        toast.setGravity(Gravity.CENTER, 0, 0);
-        toast.show();
     }
 
     @Override
@@ -74,15 +63,14 @@ class AppAdapter extends ArrayAdapter<AppInfo> {
                     appInfo.chosen = true;
                     switch (appInfo.appName) {
                         case "京东":
-                            showToast("京东:当签到助手进入到签到界面后，用户手动点击签到。" +
+                            Utils.showToast("京东:当签到助手进入到签到界面后，用户手动点击签到。" +
                                     "然后双击右上角分享按钮，签到助手才会继续。\n" +
-                                    "所有等待用户点击都会有20秒超时。");
+                                    "所有等待用户点击都会有20秒超时。", getContext());
                             break;
                         case "京东金融":
-                            showToast("京东金融:设置手势密码的，需要用户手动解锁，助手会30秒超时。\n" +
-                                    "签到领京豆后点击\"京豆明细\"触发助手继续自动化;" +
-                                    "钢蹦需要用户手动领取，领取之后点击左上角X按钮触发助手继续。\n" +
-                                    "所有等待用户点击都会有20秒超时。");
+                            Utils.showToast("京东金融:设置手势密码的，需要用户手动解锁，助手会30秒超时。\n" +
+                                    "进入签到界面后有10秒钟签到\n" +
+                                    "之后会进入钢蹦明细，用户有30秒手动领取钢蹦，领取之后点击左上角X按钮触发助手退出.", getContext());
                             break;
                         default:
                             break;

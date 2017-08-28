@@ -1,33 +1,17 @@
 package com.pyy.signin;
 
 import android.app.Activity;
-import android.app.AlertDialog;
+import android.app.AppOpsManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Looper;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import java.io.DataOutputStream;
 import java.util.ArrayList;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -43,11 +27,15 @@ public class MainPage extends Activity {
     static Lock lock = new ReentrantLock();
     static Condition condition = lock.newCondition();
     static boolean flag = false;
+    private static final int REQUEST_PACKAGE_USAGE_STATS_PERMISSION = 1010;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            checkPermission(REQUEST_PACKAGE_USAGE_STATS_PERMISSION);
+        }
         Utils.checkSignInServiceEnabled(this);
         appListView = findViewById(R.id.appListView);
         Button start = findViewById(R.id.button);
@@ -58,6 +46,30 @@ public class MainPage extends Activity {
                 new SignInThread().start();
             }
         });
+    }
+
+    private void checkPermission(int requestCode) {
+        if (requestCode == REQUEST_PACKAGE_USAGE_STATS_PERMISSION) {
+            if (!hasPermission()) {
+                //如果用户没有开启"可访问使用记录"，则跳转到该设置项并提醒用户打开
+                Utils.showToast("\"签到助手\"提示：\n请开启\"可访问使用记录\"权限", this);
+                startActivityForResult(
+                        new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS),
+                        REQUEST_PACKAGE_USAGE_STATS_PERMISSION);
+            }
+        }
+    }
+
+    //检测用户是否对本app开启了“Apps with usage access”权限
+    private boolean hasPermission() {
+        AppOpsManager appOps = (AppOpsManager)
+                getSystemService(Context.APP_OPS_SERVICE);
+        int mode = 0;
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+            mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
+                    android.os.Process.myUid(), getPackageName());
+        }
+        return mode == AppOpsManager.MODE_ALLOWED;
     }
 
     class SignInThread extends Thread {
@@ -92,7 +104,6 @@ public class MainPage extends Activity {
                 try {
                     autoLaunch(info.packageName);
                     condition.await();
-
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
