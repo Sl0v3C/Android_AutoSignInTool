@@ -2,6 +2,7 @@ package com.pyy.signin;
 
 import android.accessibilityservice.AccessibilityService;
 import android.view.accessibility.AccessibilityEvent;
+
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -15,6 +16,7 @@ import static com.pyy.signin.Utils.prt;
 public class SignInService extends AccessibilityService {
     final static String logTag = "[SignInService]";
     String fgPackageName;
+    String oldPackageName = "None";
     static Lock autoLock = new ReentrantLock();
     static Condition autoCondition = autoLock.newCondition();
     autoSignInJD jd = new autoSignInJD();
@@ -27,15 +29,15 @@ public class SignInService extends AccessibilityService {
         fgPackageName = accessibilityEvent.getPackageName().toString();
         //prt("Event: " + accessibilityEvent);
         if (accessibilityEvent.getEventType() == AccessibilityEvent.TYPE_VIEW_CLICKED) {
-            //Log.i(logTag, "CINDY " + accessibilityEvent);
             if ("com.jd.jrapp".equals(fgPackageName) && (!accessibilityEvent.getText().toString().equals("签到")
                     && !accessibilityEvent.getText().toString().equals("钢蹦明细")
                     && accessibilityEvent.getClassName().equals("android.widget.Button"))) {
-                prt("" + accessibilityEvent);
+                //prt("" + accessibilityEvent);
                 autoLock.lock();
                 autoCondition.signal();
                 autoLock.unlock();
             }
+
             if ("com.jingdong.app.mall".equals(fgPackageName)
                     && !(accessibilityEvent.getText().toString().contains("领京豆")
                     || accessibilityEvent.getText().toString().contains("我的")
@@ -43,6 +45,7 @@ public class SignInService extends AccessibilityService {
                     || accessibilityEvent.getText().toString().contains("惠赚钱")
                     || accessibilityEvent.getText().toString().contains("签到")
                     || accessibilityEvent.getText().toString().contains("领券"))) {
+                prt(" " + accessibilityEvent);
                 autoLock.lock();
                 autoCondition.signal();
                 autoLock.unlock();
@@ -51,13 +54,18 @@ public class SignInService extends AccessibilityService {
 
         if (accessibilityEvent.getEventType() == AccessibilityEvent.TYPE_VIEW_SCROLLED
                 && "com.jd.jrapp".equals(fgPackageName) && jdf.gestureLockFlag) {
+            //prt("" + accessibilityEvent);
             jdf.gestureLockFlag = false;
             autoLock.lock();
             autoCondition.signal();
             autoLock.unlock();
         }
 
-        new autoSignThread(accessibilityEvent).start();
+        //prt(oldPackageName + " ------------------------- " + fgPackageName);
+        if (!oldPackageName.equals(fgPackageName)) {
+            new autoSignThread(accessibilityEvent).start();
+        }
+        oldPackageName = fgPackageName;
     }
 
     class autoSignThread extends Thread {
@@ -69,11 +77,11 @@ public class SignInService extends AccessibilityService {
         @Override
         public void run() {
             super.run();
-            autoSign(event);
+            autoSign();
         }
     }
 
-    private void autoSign(AccessibilityEvent envent) {
+    private void autoSign() {
         if (MainPage.flag) {
             MainPage.lock.lock();
             MainPage.flag = false;
@@ -93,6 +101,7 @@ public class SignInService extends AccessibilityService {
                 default:
                     break;
             }
+            oldPackageName = "None";
             MainPage.lock.unlock();
         }
     }

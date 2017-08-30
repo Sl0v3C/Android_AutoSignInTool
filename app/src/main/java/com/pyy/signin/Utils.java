@@ -9,24 +9,13 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -50,7 +39,7 @@ public class Utils {
     }
 
     public static void reLaunch(AccessibilityService service, String text) {
-        prt(Utils.getTopApp(service.getApplicationContext()));
+        //prt(Utils.getTopApp(service.getApplicationContext()));
         if (!Utils.getTopApp(service.getApplicationContext()).equals(text)) {
             PackageManager packageManager = service.getApplicationContext().getPackageManager();
             Intent mBootUpIntent = packageManager.getLaunchIntentForPackage(text);

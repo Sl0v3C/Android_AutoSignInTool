@@ -2,6 +2,10 @@ package com.pyy.signin;
 
 import android.accessibilityservice.AccessibilityService;
 import android.view.accessibility.AccessibilityNodeInfo;
+
+import java.util.concurrent.TimeUnit;
+
+import static com.pyy.signin.SignInService.autoCondition;
 import static com.pyy.signin.SignInService.autoLock;
 import static com.pyy.signin.Utils.delay;
 
@@ -22,9 +26,11 @@ public class autoSignInSMZDM {
             Utils.reLaunch(service, SMZDM);
             delay(4000);
             iteratorSMZDM(service.getRootInActiveWindow());
-            delay(6000);
-            service.performGlobalAction(AccessibilityService.GESTURE_SWIPE_DOWN_AND_RIGHT);
+            autoCondition.await(10, TimeUnit.SECONDS); // 10s
+
+            service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
             delay(2000);
+            service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
             service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
             delay(2000);
         } catch (Exception e) {

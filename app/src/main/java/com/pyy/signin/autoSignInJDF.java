@@ -2,7 +2,9 @@ package com.pyy.signin;
 
 import android.accessibilityservice.AccessibilityService;
 import android.view.accessibility.AccessibilityNodeInfo;
+
 import java.util.concurrent.TimeUnit;
+
 import static com.pyy.signin.SignInService.autoCondition;
 import static com.pyy.signin.SignInService.autoLock;
 import static com.pyy.signin.Utils.delay;
@@ -42,6 +44,7 @@ public class autoSignInJDF {
             delay(1000);
             service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
             service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+            delay(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

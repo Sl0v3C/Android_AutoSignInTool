@@ -54,7 +54,7 @@ public class autoSignInJD {
             ret = autoCondition.await(20, TimeUnit.SECONDS); // 20s
             delay(1000);
             service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
-            delay(1000);
+            delay(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

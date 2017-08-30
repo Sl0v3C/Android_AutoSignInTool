@@ -62,15 +62,19 @@ class AppAdapter extends ArrayAdapter<AppInfo> {
                     start.setVisibility(View.VISIBLE);
                     appInfo.chosen = true;
                     switch (appInfo.appName) {
+                        case "什么值得买":
+                            Utils.showToast("什么值得买:当签到助手进入到签到界面后，用户有10秒"
+                                    + "时间手动滑动领取奖励", getContext());
                         case "京东":
-                            Utils.showToast("京东:当签到助手进入到签到界面后，用户手动点击签到。" +
-                                    "然后双击右上角分享按钮，签到助手才会继续。\n" +
+                            Utils.showToast("京东:当签到助手进入到签到界面后，用户手动点击签到"
+                                    +"。" + "然后双击右上角分享按钮，签到助手才会继续。\n" +
                                     "所有等待用户点击都会有20秒超时。", getContext());
                             break;
                         case "京东金融":
-                            Utils.showToast("京东金融:设置手势密码的，需要用户手动解锁，助手会30秒超时。\n" +
-                                    "进入签到界面后有10秒钟签到\n" +
-                                    "之后会进入钢蹦明细，用户有30秒手动领取钢蹦，领取之后点击左上角X按钮触发助手退出.", getContext());
+                            Utils.showToast("京东金融:设置手势密码的，需要用户手动解锁，助手会"
+                                    + "30秒超时。\n进入签到界面后有10秒钟签到\n" +
+                                    "之后会进入钢蹦明细，用户有30秒手动领取钢蹦，领取之后点击"
+                                    + "左上角X按钮触发助手退出.", getContext());
                             break;
                         default:
                             break;

@@ -88,3 +88,5 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+gradle/wrapper/gradle-wrapper.jar
+.idea/modules.xml

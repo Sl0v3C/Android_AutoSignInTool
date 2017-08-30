@@ -11,10 +11,13 @@ import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
+
 import java.util.ArrayList;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
+import static com.pyy.signin.Utils.prt;
 
 /**
  * Created by pyy on 2017/8/4.
@@ -87,12 +90,13 @@ public class MainPage extends Activity {
                 autoSignIn(tempInfo);
             }
         }
+        prt("Done!");
     }
 
     private void autoLaunch(String name) {
         PackageManager packageManager = this.getPackageManager();
         Intent mBootUpIntent = packageManager.getLaunchIntentForPackage(name);
-        //mBootUpIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        mBootUpIntent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
         this.startActivity(mBootUpIntent);
     }
 

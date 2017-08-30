@@ -25,6 +25,8 @@ public class autoSignInTXDM {
             iteratorTXDM(service.getRootInActiveWindow(), service);
             delay(1000);
             service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+            service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+            service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
             delay(2000);
         } catch (Exception e) {
             e.printStackTrace();
