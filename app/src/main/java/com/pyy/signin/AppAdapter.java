@@ -65,6 +65,7 @@ class AppAdapter extends ArrayAdapter<AppInfo> {
                         case "什么值得买":
                             Utils.showToast("什么值得买:当签到助手进入到签到界面后，用户有10秒"
                                     + "时间手动滑动领取奖励", getContext());
+							break;
                         case "京东":
                             Utils.showToast("京东:当签到助手进入到签到界面后，用户手动点击签到"
                                     +"。" + "然后双击右上角分享按钮，签到助手才会继续。\n" +
