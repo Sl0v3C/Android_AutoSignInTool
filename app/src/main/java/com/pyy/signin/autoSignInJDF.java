@@ -30,12 +30,16 @@ public class autoSignInJDF {
                     return;
                 }
             }
+            service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+            delay(1000);
+            service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+            delay(1000);
             iteratorJDF(service.getRootInActiveWindow());  // 主页签到
             delay(6000);
             iteratorJDF(service.getRootInActiveWindow());  // 右上角签到
-            ret = autoCondition.await(10, TimeUnit.SECONDS); // 10s
-            iteratorJDF(service.getRootInActiveWindow());  // 右上角钢蹦明细
-            ret = autoCondition.await(30, TimeUnit.SECONDS); // 30s
+            ret = autoCondition.await(20, TimeUnit.SECONDS); // 10s
+            //iteratorJDF(service.getRootInActiveWindow());  // 右上角钢蹦明细
+            //ret = autoCondition.await(30, TimeUnit.SECONDS); // 30s
             service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
             delay(1000);
             service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
@@ -64,6 +68,7 @@ public class autoSignInJDF {
                 return;
             }
 
+            /*
             if (info.getText().toString().contains("钢镚明细")) {
                 if (info.isClickable() && info.findAccessibilityNodeInfosByViewId("com.jd.jrapp:id/btn_feedback_summit") != null) {
                     info.performAction(AccessibilityNodeInfo.ACTION_CLICK);
@@ -71,6 +76,7 @@ public class autoSignInJDF {
                     return;
                 }
             }
+            */
 
             if (info.getText().equals("签到")) {
                 AccessibilityNodeInfo parent = info.getParent();

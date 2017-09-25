@@ -33,7 +33,7 @@ public class Utils {
 
     public static void showToast(String text, Context context) {
         Toast toast = Toast.makeText(context,
-                text, Toast.LENGTH_LONG);
+                text, Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
     }
